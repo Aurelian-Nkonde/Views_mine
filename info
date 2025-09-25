@@ -1,0 +1,22 @@
+Views_mine (photo view sharing app)
+
+User can sign up/in and create some views that other people can see and leave a like/unlike and also request more info about the view/place
+User {
+    id, username, email, password, emailVerified, uniqueId, active, createdAt, updatedAt, deletedAt
+}
+
+View {
+    id, headtitle, paragraph, image, createdAt, updatedAt, deletedAt, userId, public, uniqueId
+}
+
+reaction {
+    id, react, userid, viewId, createdAt, updatedAt, deletedAt, uniqueId
+}
+
+Request_info {
+    id, requesterId, viewId, uniqueId, createdAt, updatedAt, deletedAt
+}
+
+Norification {
+    id, notificationType, read, userId, uniqueId, createdAt, updatedAt, deletedAt
+}

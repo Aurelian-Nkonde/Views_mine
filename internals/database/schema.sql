@@ -1,0 +1,55 @@
+
+--  DEFAULT gen_random_uuid()
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+CREATE TABLE IF NOT EXISTS accounts (
+  account_id UUID PRIMARY KEY,
+  username VARCHAR(50) UNIQUE NOT NULL,
+  email VARCHAR(50) UNIQUE NOT NULL,
+  password VARCHAR(50) NOT NULL,
+  email_verified BOOLEAN NOT NULL DEFAULT false,
+  active BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP,
+  deleted_at TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS views (
+  view_id UUID PRIMARY KEY,
+  title VARCHAR(100) NOT NULL,
+  paragraph TEXT NOT NULL,
+  user_id UUID NOT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  public BOOLEAN NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP,
+  deleted_at TIMESTAMP 
+);
+
+CREATE TABLE IF NOT EXISTS reactions (
+  reaction_id UUID PRIMARY KEY ,
+  react BOOLEAN NOT NULL,
+  user_id UUID NOT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  view_id UUID NOT NULL REFERENCES views(view_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP,
+  deleted_at TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS request_infos (
+  request_info_id UUID PRIMARY KEY,
+  user_id UUID NOT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  view_id UUID NOT NULL REFERENCES views(view_id) ON DELETE CASCADE ON UPDATE CASCADE,  
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP,
+  deleted_at TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS notifications (
+  notification_id UUID PRIMARY KEY,
+  notification_type VARCHAR(50) NOT NULL,
+  read BOOLEAN NOT NULL,
+  user_id UUID NOT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP,
+  deleted_at TIMESTAMP
+);
