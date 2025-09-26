@@ -23,9 +23,9 @@ DELETE FROM accounts WHERE account_id = $1;
 
 -- name: CreateView :one
 INSERT INTO views (
-  title, paragraph, user_id, public
+  title, paragraph, user_id, public, view_id
 ) VALUES (
-  $1, $2, $3, $4
+  $1, $2, $3, $4, $5
 ) RETURNING *;
 
 -- name: GetView :one

@@ -51,9 +51,9 @@ func (q *Queries) CreateAccount(ctx context.Context, arg CreateAccountParams) (A
 
 const createView = `-- name: CreateView :one
 INSERT INTO views (
-  title, paragraph, user_id, public
+  title, paragraph, user_id, public, view_id
 ) VALUES (
-  $1, $2, $3, $4
+  $1, $2, $3, $4, $5
 ) RETURNING view_id, title, paragraph, user_id, public, created_at, updated_at, deleted_at
 `
 
@@ -62,6 +62,7 @@ type CreateViewParams struct {
 	Paragraph string
 	UserID    uuid.UUID
 	Public    bool
+	ViewID    uuid.UUID
 }
 
 func (q *Queries) CreateView(ctx context.Context, arg CreateViewParams) (View, error) {
@@ -70,6 +71,7 @@ func (q *Queries) CreateView(ctx context.Context, arg CreateViewParams) (View, e
 		arg.Paragraph,
 		arg.UserID,
 		arg.Public,
+		arg.ViewID,
 	)
 	var i View
 	err := row.Scan(

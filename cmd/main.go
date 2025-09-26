@@ -8,13 +8,12 @@ import (
 	"os"
 	"time"
 
-	"thousand.views_mine/cmd/handlers"
-	"thousand.views_mine/internals/database/db_quaries"
-
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/jackc/pgx/v5"
 	"github.com/joho/godotenv"
+	"thousand.views_mine/cmd/handlers"
+	"thousand.views_mine/internals/database/db_quaries"
 )
 
 func main() {
@@ -54,6 +53,11 @@ func main() {
 	})
 	r.Route("/view", func(r chi.Router) {
 		r.Get("/", h.GetAllViews)
+		r.Post("/", h.CreateView)
+		r.Get("/{id}", h.GetView)
+		r.Get("/user/{id}", h.GetUserViews)
+		r.Get("/public", h.GetAllPublicViews)
+		r.Delete("/{id}", h.DeleteView)
 	})
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Not found!")
