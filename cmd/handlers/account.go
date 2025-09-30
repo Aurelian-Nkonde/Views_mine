@@ -15,8 +15,8 @@ import (
 
 func (h *App) Login(w http.ResponseWriter, r *http.Request) {
 	type loginData struct {
-		Username string
-		Password string
+		Username string `json: "username"`
+		Password string `json: "password"`
 	}
 
 	var data loginData
@@ -28,24 +28,22 @@ func (h *App) Login(w http.ResponseWriter, r *http.Request) {
 
 	acc, err := h.Quaries.GetUserByAccount(h.Ctx, data.Username)
 	if err != nil {
-		log.Println("account is not found")
-		http.NotFound(w, r)
+		http.Error(w, "invalid credentials", http.StatusBadRequest)
 		return
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(acc.Password), []byte(data.Password))
 	if err != nil {
-		log.Println("password err")
-		http.Error(w, "password err", http.StatusBadRequest)
+		http.Error(w, "invalid credentials", http.StatusBadRequest)
 		return
 	}
 
 	type accountinfo struct {
-		Id        string
-		Username  string
-		Email     string
-		Token     string
-		Verified  bool
-		CreatedAt pgtype.Timestamp
+		Id        string           `json: "id"`
+		Username  string           `json: "username"`
+		Email     string           `json: "email"`
+		Token     string           `json: "token"`
+		Verified  bool             `json: "verified"`
+		CreatedAt pgtype.Timestamp `json: "createdAt"`
 	}
 	_, tns, err := h.Token.Encode(map[string]interface{}{
 		"user_id": acc.AccountID,
