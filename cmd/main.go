@@ -10,13 +10,18 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/jwtauth/v5"
 	"github.com/jackc/pgx/v5"
 	"github.com/joho/godotenv"
+
 	"thousand.views_mine/cmd/handlers"
 	"thousand.views_mine/internals/database/db_quaries"
 )
 
+var tokenAuth *jwtauth.JWTAuth
+
 func main() {
+	tokenAuth = jwtauth.New("HS256", []byte("secret-code"), nil)
 
 	err := godotenv.Load()
 	if err != nil {
@@ -38,6 +43,7 @@ func main() {
 	h := handlers.App{
 		Quaries: q,
 		Ctx:     ctx,
+		Token:   tokenAuth,
 	}
 
 	r := chi.NewRouter()
@@ -45,11 +51,16 @@ func main() {
 	r.Use(middleware.Logger)
 
 	r.Route("/account", func(r chi.Router) {
-		r.Get("/", h.GetAccounts)
-		r.Get("/{id}", h.GetAccount)
+		r.Group(func(r chi.Router) {
+			r.Use(jwtauth.Verifier(tokenAuth))
+			r.Use(jwtauth.Authenticator(tokenAuth))
+			r.Get("/", h.GetAccounts)
+			r.Get("/{id}", h.GetAccount)
+			r.Delete("/{id}", h.DeleteAccount)
+		})
 		r.Put("/verify-email/{id}", h.VerifyEmail)
-		r.Delete("/{id}", h.DeleteAccount)
-		r.Post("/", h.CreateAccount)
+		r.Post("/signup", h.CreateAccount)
+		r.Post("/login", h.Login)
 	})
 	r.Route("/view", func(r chi.Router) {
 		r.Get("/", h.GetAllViews)

@@ -226,6 +226,27 @@ func (q *Queries) GetAllViews(ctx context.Context) ([]View, error) {
 	return items, nil
 }
 
+const getUserByAccount = `-- name: GetUserByAccount :one
+SELECT account_id, username, email, password, email_verified, active, created_at, updated_at, deleted_at FROM accounts WHERE username = $1 LIMIT 1
+`
+
+func (q *Queries) GetUserByAccount(ctx context.Context, username string) (Account, error) {
+	row := q.db.QueryRow(ctx, getUserByAccount, username)
+	var i Account
+	err := row.Scan(
+		&i.AccountID,
+		&i.Username,
+		&i.Email,
+		&i.Password,
+		&i.EmailVerified,
+		&i.Active,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+	)
+	return i, err
+}
+
 const getUserViews = `-- name: GetUserViews :many
 SELECT view_id, title, paragraph, user_id, public, created_at, updated_at, deleted_at FROM views WHERE user_id = $1
 `

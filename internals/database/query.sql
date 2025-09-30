@@ -20,6 +20,9 @@ WHERE account_id = $1 RETURNING *;
 DELETE FROM accounts WHERE account_id = $1;
 
 
+-- name: GetUserByAccount :one
+SELECT * FROM accounts WHERE username = $1 LIMIT 1;
+
 
 -- name: CreateView :one
 INSERT INTO views (
