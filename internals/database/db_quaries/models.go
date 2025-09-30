@@ -51,12 +51,12 @@ type RequestInfo struct {
 }
 
 type View struct {
-	ViewID    uuid.UUID
-	Title     string
-	Paragraph string
-	UserID    uuid.UUID
-	Public    bool
-	CreatedAt pgtype.Timestamp
-	UpdatedAt pgtype.Timestamp
-	DeletedAt pgtype.Timestamp
+	ViewID    uuid.UUID 
+	Title     string 
+	Paragraph string 
+	UserID    uuid.UUID 
+	Public    bool 
+	CreatedAt pgtype.Timestamp 
+	UpdatedAt pgtype.Timestamp 
+	DeletedAt pgtype.Timestamp 
 }

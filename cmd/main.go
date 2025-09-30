@@ -63,12 +63,16 @@ func main() {
 		r.Post("/login", h.Login)
 	})
 	r.Route("/view", func(r chi.Router) {
+		r.Group(func(r chi.Router) {
+			r.Use(jwtauth.Verifier(tokenAuth))
+			r.Use(jwtauth.Authenticator(tokenAuth))
+			r.Get("/user/{id}", h.GetUserViews)
+			r.Post("/", h.CreateView)
+			r.Delete("/{id}", h.DeleteView)
+		})
 		r.Get("/", h.GetAllViews)
-		r.Post("/", h.CreateView)
 		r.Get("/{id}", h.GetView)
-		r.Get("/user/{id}", h.GetUserViews)
 		r.Get("/public", h.GetAllPublicViews)
-		r.Delete("/{id}", h.DeleteView)
 	})
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Not found!")

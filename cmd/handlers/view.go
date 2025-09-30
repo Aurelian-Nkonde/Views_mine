@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -38,14 +39,7 @@ func (h *App) CreateView(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "error decoding data", http.StatusBadRequest)
 		return
 	}
-
-	// simple validations!
-	if data.Title == "" || data.Paragraph == "" || data.UserID == uuid.Nil || data.ViewID == uuid.Nil {
-		log.Println("data fields must not be empty")
-		http.Error(w, "data fields must not be empty", http.StatusBadRequest)
-		return
-	}
-
+	fmt.Println(data)
 	rnd, err := uuid.NewRandom()
 	if err != nil {
 		log.Println("error generating uuid")
@@ -60,6 +54,7 @@ func (h *App) CreateView(w http.ResponseWriter, r *http.Request) {
 		Public:    data.Public,
 		ViewID:    rnd,
 	})
+
 	if err != nil {
 		log.Println("error creating a new view")
 		http.Error(w, "error creating a new view", http.StatusInternalServerError)
